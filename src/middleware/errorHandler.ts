@@ -1,6 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
 import { ZodError } from 'zod';
-import { Prisma } from '@prisma/client';
 
 export const errorHandler = (
   error: Error,
@@ -21,8 +20,10 @@ export const errorHandler = (
     return;
   }
 
-  if (error instanceof Prisma.PrismaClientKnownRequestError) {
-    if (error.code === 'P2002') {
+  // Check for Prisma errors by their name and code property
+  if ('code' in error && typeof (error as any).code === 'string') {
+    const code = (error as any).code;
+    if (code === 'P2002') {
       res.status(409).json({
         error: 'Resource already exists',
         details: 'A record with this unique field already exists',
@@ -30,7 +31,7 @@ export const errorHandler = (
       return;
     }
 
-    if (error.code === 'P2025') {
+    if (code === 'P2025') {
       res.status(404).json({
         error: 'Resource not found',
       });
