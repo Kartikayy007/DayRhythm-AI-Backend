@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import aiRoutes from './ai.routes';
+import eventsRoutes from './events.routes';
 
 const router = Router();
 
@@ -15,5 +16,6 @@ router.get('/health', (_req, res) => {
 
 
 router.use('/ai', aiRoutes);
+router.use('/events', eventsRoutes);
 
 export default router;

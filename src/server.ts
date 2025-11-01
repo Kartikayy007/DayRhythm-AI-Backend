@@ -26,7 +26,9 @@ app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 app.use(generalLimiter);
 
 // API routes
-app.use('/api', routes);
+// In Vercel, requests are already routed to /api/*, so don't add /api prefix again
+const routePrefix = process.env.VERCEL === '1' ? '/' : '/api';
+app.use(routePrefix, routes);
 
 // Global error handler
 app.use(errorHandler);
