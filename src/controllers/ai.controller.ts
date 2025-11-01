@@ -97,7 +97,7 @@ export async function generateDayInsights(req: Request, res: Response) {
       ];
     }
 
-    res.json({
+    return res.json({
       success: true,
       data: {
         insights,
@@ -107,7 +107,7 @@ export async function generateDayInsights(req: Request, res: Response) {
 
   } catch (error) {
     console.error('AI insights error:', error);
-    res.status(500).json({
+    return res.status(500).json({
       success: false,
       error: 'Failed to generate insights'
     });
@@ -185,14 +185,14 @@ Rules:
       });
     }
 
-    res.json({
+    return res.json({
       success: true,
       data: { events }
     });
 
   } catch (error) {
     console.error('Natural language parsing error:', error);
-    res.status(500).json({
+    return res.status(500).json({
       success: false,
       error: 'Failed to parse natural language'
     });
@@ -273,14 +273,14 @@ Rules:
       });
     }
 
-    res.json({
+    return res.json({
       success: true,
       data: { events }
     });
 
   } catch (error) {
     console.error('Gemini parsing error:', error);
-    res.status(500).json({
+    return res.status(500).json({
       success: false,
       error: 'Failed to parse natural language with Gemini'
     });
@@ -385,14 +385,14 @@ Rules:
 
     console.log(`✅ Extracted ${events.length} events from image`);
 
-    res.json({
+    return res.json({
       success: true,
       data: { events }
     });
 
   } catch (error) {
     console.error('Image parsing error:', error);
-    res.status(500).json({
+    return res.status(500).json({
       success: false,
       error: 'Failed to parse image. Please ensure the image contains a clear timetable or schedule.'
     });
@@ -510,14 +510,14 @@ Rules:
 
     console.log(`✅ Extracted ${events.length} events from ${images.length} images`);
 
-    res.json({
+    return res.json({
       success: true,
       data: { events }
     });
 
   } catch (error) {
     console.error('Multi-image parsing error:', error);
-    res.status(500).json({
+    return res.status(500).json({
       success: false,
       error: 'Failed to parse images. Please ensure the images contain clear timetables or schedules.'
     });
@@ -573,7 +573,7 @@ export async function generateAnalytics(req: Request, res: Response) {
     const uniqueDates = new Set(events.map(e => e.date)).size;
     const averageEventsPerDay = totalEvents / uniqueDates;
 
-    res.json({
+    return res.json({
       success: true,
       data: {
         summary: `Analyzed ${totalEvents} events across ${uniqueDates} days`,
@@ -586,7 +586,7 @@ export async function generateAnalytics(req: Request, res: Response) {
 
   } catch (error) {
     console.error('Analytics error:', error);
-    res.status(500).json({
+    return res.status(500).json({
       success: false,
       error: 'Failed to generate analytics'
     });
@@ -649,7 +649,7 @@ Give 2 bullet points about optimal timing or effectiveness.`
 
     const insight = completion.choices[0].message.content || generateFallbackTaskInsight(startHour, duration);
 
-    res.json({
+    return res.json({
       success: true,
       data: { insight: insight.trim() }
     });
@@ -657,12 +657,12 @@ Give 2 bullet points about optimal timing or effectiveness.`
   } catch (error) {
     console.error('Task insight error:', error);
 
-    
+
     const { startTime = 9, endTime = 10 } = req.body;
     const startHour = Math.floor(startTime);
     const duration = endTime - startTime;
 
-    res.json({
+    return res.json({
       success: true,
       data: { insight: generateFallbackTaskInsight(startHour, duration) }
     });

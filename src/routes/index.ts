@@ -4,7 +4,7 @@ import aiRoutes from './ai.routes';
 const router = Router();
 
 
-router.get('/health', (req, res) => {
+router.get('/health', (_req, res) => {
   res.json({
     success: true,
     message: 'DayRhythm AI Backend is running',

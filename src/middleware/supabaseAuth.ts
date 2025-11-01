@@ -4,6 +4,18 @@ import { env } from '../config/env';
 
 const supabase = createClient(env.SUPABASE_URL, env.SUPABASE_SERVICE_KEY);
 
+// Extend Express Request to include user property
+declare global {
+  namespace Express {
+    interface Request {
+      user?: {
+        id: string;
+        email: string;
+      };
+    }
+  }
+}
+
 export async function verifySupabaseToken(
   req: Request,
   res: Response,
@@ -35,10 +47,10 @@ export async function verifySupabaseToken(
       email: user.email || ''
     };
 
-    next();
+    return next();
   } catch (error) {
     console.error('Token verification error:', error);
-    res.status(401).json({
+    return res.status(401).json({
       success: false,
       error: 'Token verification failed'
     });

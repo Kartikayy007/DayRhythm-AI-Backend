@@ -4,19 +4,19 @@ import { Prisma } from '@prisma/client';
 
 export const errorHandler = (
   error: Error,
-  req: Request,
+  _req: Request,
   res: Response,
-  next: NextFunction
+  _next: NextFunction
 ): void => {
   console.error('Error:', error);
 
   if (error instanceof ZodError) {
     res.status(400).json({
       error: 'Validation error',
-      details: error.errors.map((err) => ({
-        field: err.path.join('.'),
-        message: err.message,
-      })),
+      details: (error as any).issues?.map((issue: any) => ({
+        field: issue.path.join('.'),
+        message: issue.message,
+      })) || [],
     });
     return;
   }

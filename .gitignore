@@ -10,3 +10,4 @@ coverage/
 *.db
 .env.local
 .env.production
+.vercel
