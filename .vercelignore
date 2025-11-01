@@ -12,6 +12,5 @@ yarn-error.log*
 .vscode
 .idea
 *.log
-dist
 coverage
 .nyc_output
