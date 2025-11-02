@@ -20,7 +20,8 @@ const EventSchema = z.object({
     enabled: z.boolean(),
     minutesBefore: z.array(z.number()),
     notificationIds: z.array(z.string())
-  }).optional()
+  }).optional(),
+  localId: z.string().optional() // Add localId field for iOS UUID tracking
 });
 
 const BatchEventSchema = z.object({
@@ -94,6 +95,7 @@ export const getEvents = async (req: AuthRequest, res: Response, next: NextFunct
         minutesBefore: [],
         notificationIds: []
       },
+      localId: event.local_id,
       createdAt: event.created_at,
       updatedAt: event.updated_at
     }));
@@ -146,6 +148,7 @@ export const createEvent = async (req: AuthRequest, res: Response, next: NextFun
         minutesBefore: [],
         notificationIds: []
       },
+      local_id: eventData.localId || null, // Store iOS app's local UUID
       created_at: new Date().toISOString(),
       updated_at: new Date().toISOString()
     };
@@ -175,6 +178,7 @@ export const createEvent = async (req: AuthRequest, res: Response, next: NextFun
       participants: newEvent.participants,
       isCompleted: newEvent.is_completed,
       notificationSettings: newEvent.notification_settings,
+      localId: newEvent.local_id,
       createdAt: newEvent.created_at,
       updatedAt: newEvent.updated_at
     };
@@ -226,6 +230,7 @@ export const updateEvent = async (req: AuthRequest, res: Response, next: NextFun
     if (updates.category !== undefined) dbUpdates.category = updates.category;
     if (updates.participants !== undefined) dbUpdates.participants = updates.participants;
     if (updates.isCompleted !== undefined) dbUpdates.is_completed = updates.isCompleted;
+    if (updates.localId !== undefined) dbUpdates.local_id = updates.localId;
     if (updates.notificationSettings !== undefined) {
       dbUpdates.notification_settings = updates.notificationSettings;
     }
@@ -360,6 +365,7 @@ export const batchSyncEvents = async (req: AuthRequest, res: Response, next: Nex
         minutesBefore: [],
         notificationIds: []
       },
+      local_id: event.localId || null,
       created_at: new Date().toISOString(),
       updated_at: new Date().toISOString()
     }));
